@@ -23,6 +23,7 @@
 #include "button_utils.h"
 #include "power_utils.h"
 #include "display.h"
+#include "mode_manager.h"
 
 #ifdef BUTTON_PIN
 
@@ -99,6 +100,8 @@
                 userButton.attachLongPressStart(longPress1);
                 userButton.attachDoubleClick(doublePress1);
                 userButton.attachMultiClick(multiPress1);
+                // was: userButton.attachMultiClick(multiPress1);
+                userButton.attachMultiClick(MODE_Manager::toggle);
                 #ifdef RPC_Electronics_1W_LoRa_GPS
                     userButton2.attachClick(singlePress2);
                     userButton3.attachClick(singlePress3);

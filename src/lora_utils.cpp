@@ -24,6 +24,7 @@
 #include "board_pinout.h"
 #include "lora_utils.h"
 #include "display.h"
+#include "mode_manager.h"
 
 extern logging::Logger  logger;
 extern Configuration    Config;
@@ -56,6 +57,28 @@ bool transmitFlag    = true;
 #endif
 
 namespace LoRa_Utils {
+
+
+
+void setSyncWord(uint8_t sw) {
+    radio.standby();
+    radio.setSyncWord(sw);
+    radio.startReceive();
+    operationDone = false;
+    transmitFlag  = false;
+}
+
+void sendRawFT8(const String& text) {
+    logger.log(logging::LoggerLevel::LOGGER_LEVEL_INFO, "FT8 Tx", "---> %s", text.c_str());
+    #if defined(TTGO_T_BEAM_1W)
+        digitalWrite(RADIO_RXEN, LOW);
+    #endif
+    String out = text;                 // RadioLib::transmit wants a non-const String&
+    int state = radio.transmit(out);
+    transmitFlag = true;
+    if (state != RADIOLIB_ERR_NONE) { Serial.print(F("FT8 Tx failed, code ")); Serial.println(state); }
+}
+
 
     void setFlag(void) {
         operationDone = true;
@@ -187,6 +210,7 @@ namespace LoRa_Utils {
     }
 
     void sendNewPacket(const String& newPacket) {
+        if (MODE_Manager::isFT8()) return;
         logger.log(logging::LoggerLevel::LOGGER_LEVEL_INFO, "LoRa Tx","---> %s", newPacket.c_str());
         /*logger.log(logging::LoggerLevel::LOGGER_LEVEL_WARN, "LoRa","Send data: %s", newPacket.c_str());
         logger.log(logging::LoggerLevel::LOGGER_LEVEL_ERROR, "LoRa","Send data: %s", newPacket.c_str());
@@ -273,5 +297,15 @@ namespace LoRa_Utils {
     void sleepRadio() {
         radio.sleep();
     }
+void setSpreadingFactor(uint8_t sf) {
+    radio.standby();
+    radio.setSpreadingFactor(sf);
+    radio.startReceive();
+    operationDone = false;
+    transmitFlag  = false;
+}
+void restoreAprsSpreadingFactor() {
+    setSpreadingFactor(currentLoRaType->spreadingFactor);   // currentLoRaType is already extern in this file
+}
 
 }

@@ -32,6 +32,7 @@
 #include "wx_utils.h"
 #include "display.h"
 #include "utils.h"
+#include "mode_manager.h"
 
 
 extern int                  menuDisplay;
@@ -122,6 +123,7 @@ namespace MENU_Utils {
     }
 
     void showOnScreen() {
+	if (MODE_Manager::isFT8()) return;   // FT8 mode owns the display
         String lastLine;
         uint32_t lastMenuTime = millis() - menuTime;
         if (!(menuDisplay==0) && !(menuDisplay==400) && !(menuDisplay==410) && !(menuDisplay==300) && !(menuDisplay>=500 && menuDisplay<=5100) && lastMenuTime > 30*1000) {

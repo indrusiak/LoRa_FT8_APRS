@@ -39,6 +39,10 @@ namespace LoRa_Utils {
     ReceivedLoRaPacket receiveFromSleep();
     ReceivedLoRaPacket receivePacket();
     void sleepRadio();
+    void setSyncWord(uint8_t sw);
+    void sendRawFT8(const String& text);
+    void setSpreadingFactor(uint8_t sf);
+    void restoreAprsSpreadingFactor();
 
 }
 

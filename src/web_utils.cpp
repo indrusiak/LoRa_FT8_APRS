@@ -21,6 +21,9 @@
 #include "web_utils.h"
 #include "display.h"
 #include "utils.h"
+#include "mode_manager.h"
+#include "lora_utils.h"
+#include "ft8_web.h"
 
 extern Configuration               Config;
 
@@ -331,5 +334,25 @@ namespace WEB_Utils {
 
         server.begin();
     }
+
+
+  static bool ft8ServerStarted = false;
+
+
+
+  void setupFT8() {
+      server.reset();
+      FT8_Web::registerRoutes(server);   // page + /api/status,/rx,/config,/tx,/log,/log.adi,/exit-ft8
+      server.onNotFound(handleNotFound);
+      if (!ft8ServerStarted) { server.begin(); ft8ServerStarted = true; }
+  }
+
+
+
+
+  void stopFT8() {
+      server.reset();
+  }
+
 
 }

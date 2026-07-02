@@ -30,6 +30,8 @@
 #include "gps_utils.h"
 #include "display.h"
 #include "logger.h"
+#include "mode_manager.h"
+#include "ft8_web.h"
 
 
 extern Beacon               *currentBeacon;
@@ -406,6 +408,17 @@ namespace MSG_Utils {
     }
 
     void checkReceivedMessage(ReceivedLoRaPacket packet) {
+
+
+        if (MODE_Manager::isFT8()) {
+               // SF11 already rejects SF12 APRS at the PHY; 0x3c check is belt-and-braces.
+               if (packet.text.length() > 0 && (uint8_t)packet.text[0] != 0x3c) {
+                    FT8_Web::pushRx(packet.text, packet.rssi);
+               }
+        return;
+        }
+
+
         if(packet.text.isEmpty()) {
             return;
         }

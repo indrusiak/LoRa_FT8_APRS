@@ -35,7 +35,8 @@ namespace WEB_Utils {
     void handleScript(AsyncWebServerRequest *request);
     void handleBootstrapStyle(AsyncWebServerRequest *request);
     void handleBootstrapScript(AsyncWebServerRequest *request);
-
+    void setupFT8();
+    void stopFT8();
     void setup();
 
 }

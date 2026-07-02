@@ -64,6 +64,7 @@ ____________________________________________________________________*/
 #include "wx_utils.h"
 #include "display.h"
 #include "utils.h"
+#include "mode_manager.h"
 #ifdef HAS_TOUCHSCREEN
 #include "touch_utils.h"
 #endif
@@ -145,6 +146,7 @@ void setup() {
     GPS_Utils::setup();
     currentLoRaType = &Config.loraTypes[loraIndex];
     LoRa_Utils::setup();
+    MODE_Manager::setup();
     Utils::i2cScannerForPeripherals();
     WX_Utils::setup();
 
@@ -197,6 +199,7 @@ void loop() {
     SMARTBEACON_Utils::checkState();
 
     BATTERY_Utils::monitor();
+    MODE_Manager::loop();
     Utils::checkDisplayEcoMode();
 
     #ifdef BUTTON_PIN
